@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Scope;
 
 @org.springframework.stereotype.Service
 @Scope("prototype")
-public class Service {
+public class ServiceB {
     private int counter = 0;
 
     public void incrementCounter() {

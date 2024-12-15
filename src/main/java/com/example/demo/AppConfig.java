@@ -3,30 +3,30 @@ package com.example.demo;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
 
 @Configuration
 public class AppConfig {
 
+    // Основной бин ServiceB с областью видимости Singleton
     @Bean
     @Primary
-    @Qualifier("primaryServiceB")
-    public ServiceB serviceB() {
+    @Qualifier("singletonServiceB")
+    @Scope("singleton") // Устанавливаем область видимости как Singleton
+    public ServiceB singletonServiceB() {
         return new ServiceB();
     }
 
+    // Вторичный бин ServiceB с областью видимости Prototype
     @Bean
-    @Qualifier("secondaryServiceB")
-    public ServiceB secondaryServiceB() {
+    @Qualifier("prototypeServiceB")
+    @Scope("prototype") // Устанавливаем область видимости как Prototype
+    public ServiceB prototypeServiceB() {
         return new ServiceB();
     }
 
-    @Bean
-    @Qualifier("serviceC")
-    public ServiceC serviceC(@Qualifier("requestIdGenerator") RequestIdGenerator generator) {
-        return new ServiceC(generator);
-    }
-
+    // Бин RequestIdGenerator
     @Bean
     @Qualifier("requestIdGenerator")
     public RequestIdGenerator requestIdGenerator() {

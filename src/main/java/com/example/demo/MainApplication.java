@@ -1,31 +1,29 @@
 package com.example.demo;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import static org.assertj.core.api.Assertions.assertThat;
+public class MainApplication {
+    public static void main(String[] args) {
+        // Создание ApplicationContext на основе конфигурации AppConfig
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
 
-@SpringBootTest // Аннотация для тестирования Spring Boot приложения
-public class DemoApplicationTests {
+        // Получаем экземпляры бинов
+        ServiceB singletonServiceB1 = context.getBean("singletonServiceB", ServiceB.class);
+        ServiceB singletonServiceB2 = context.getBean("singletonServiceB", ServiceB.class);
 
-    @Autowired
-    private ServiceB serviceB;
+        ServiceB prototypeServiceB1 = context.getBean("prototypeServiceB", ServiceB.class);
+        ServiceB prototypeServiceB2 = context.getBean("prototypeServiceB", ServiceB.class);
 
-    @Autowired
-    private ServiceB secondaryServiceB;
+        // Выполняем методы, чтобы продемонстрировать их создание и работу
+        singletonServiceB1.incrementCounter();
+        singletonServiceB2.incrementCounter(); // Это не должно изменить счетчик
 
-    @Autowired
-    private ServiceC serviceC;
+        prototypeServiceB1.incrementCounter();
+        prototypeServiceB2.incrementCounter(); // Это должно показать другой счетчик
 
-    @Autowired
-    private RequestIdGenerator requestIdGenerator;
-
-    @Test
-    public void contextLoads() { // Тестирует, что контекст загружается
-        assertThat(serviceB).isNotNull(); // Проверяет, что первичный ServiceB создается
-        assertThat(secondaryServiceB).isNotNull(); // Проверяет, что вторичный ServiceB создается
-        assertThat(serviceC).isNotNull(); // Проверяет, что ServiceC создается
-        assertThat(requestIdGenerator).isNotNull(); // Проверяет, что RequestIdGenerator создается
+        System.out.println("Singleton ServiceB Counter: " + singletonServiceB1.getCounter());
+        System.out.println("Prototype ServiceB Counter 1: " + prototypeServiceB1.getCounter());
+        System.out.println("Prototype ServiceB Counter 2: " + prototypeServiceB2.getCounter());
     }
 }
